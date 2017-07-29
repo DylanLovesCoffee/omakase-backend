@@ -44,6 +44,20 @@ class RecipesController < ActionController::API
                   "missedIngredientCount": 12,
                   "likes": 9
                 }
-    ] 
+    ]
+  end
+
+  def search_results
+    url = "https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/findByIngredients?fillIngredients=false&ingredients="
+    ending = "&limitLicense=false&number=5&ranking=1"
+    ingredients = "params[:food]"
+    response = Unirest.get "#{url}#{ingredients}#ending",
+    headers:{
+      "X-Mashape-Key" => ENV['AUTH_KEY'],
+      "Accept" => "application/json"
+    }
+
+    render json: response.body
+
   end
 end
