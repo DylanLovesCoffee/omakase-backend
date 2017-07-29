@@ -50,7 +50,7 @@ class RecipesController < ActionController::API
   def search_results
     url = "https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/findByIngredients?fillIngredients=false&ingredients="
     ending = "&limitLicense=false&number=5&ranking=1"
-    ingredients = "params[:food]"
+    ingredients = params[:food]
     response = Unirest.get "#{url}#{ingredients}#ending",
     headers:{
       "X-Mashape-Key" => ENV['AUTH_KEY'],
