@@ -60,4 +60,19 @@ class RecipesController < ActionController::API
     render json: response.body
 
   end
+
+  def recipe_details
+    url = "https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/"
+    ending = "/information?includenutrition=false"
+    recipe_id = params[:id]
+    full = "https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/479101/information?includenutrition=false"
+    response = Unirest.get "#{url}#{recipe_id}#{ending}",
+
+    headers:{
+      "X-Mashape-Key" => ENV['AUTH_KEY'],
+      "Accept" => "application/json"
+    }
+
+    render json: response.body
+  end
 end
