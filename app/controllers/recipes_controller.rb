@@ -53,18 +53,18 @@ class RecipesController < ActionController::API
     ingredients = params[:food]
     recipes = Unirest.get "#{url}#{ingredients}#ending",
     headers:{
-      "X-Mashape-Key" => ENV['AUTH_KEY'],
+      "X-Mashape-Key" => params[:api_key],
       "Accept" => "application/json"
     }
 
     recipes.body.each do |recipe|
       details_url = "https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/"
       details_ending = "/information?includenutrition=false"
-      details_recipe_id = recipe['id']
+      details_recipe_id = recipe[:id]
       response = Unirest.get "#{details_url}#{details_recipe_id}#{details_ending}",
 
       headers:{
-        "X-Mashape-Key" => ENV['AUTH_KEY'],
+        "X-Mashape-Key" => params[:api_key],
         "Accept" => "application/json"
       }
       recipe[:instructions] = response.body['instructions']
@@ -82,7 +82,7 @@ class RecipesController < ActionController::API
     response = Unirest.get "#{details_url}#{details_recipe_id}#{details_ending}",
 
     headers:{
-      "X-Mashape-Key" => ENV['AUTH_KEY'],
+      "X-Mashape-Key" => params[:api_key],
       "Accept" => "application/json"
     }
 
