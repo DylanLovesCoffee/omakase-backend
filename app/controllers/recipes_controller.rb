@@ -51,22 +51,35 @@ class RecipesController < ActionController::API
     url = "https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/findByIngredients?fillIngredients=false&ingredients="
     ending = "&limitLicense=false&number=5&ranking=1"
     ingredients = params[:food]
-    response = Unirest.get "#{url}#{ingredients}#ending",
+    recipes = Unirest.get "#{url}#{ingredients}#ending",
     headers:{
       "X-Mashape-Key" => ENV['AUTH_KEY'],
       "Accept" => "application/json"
     }
 
-    render json: response.body
+    recipes.body.each do |recipe|
+      details_url = "https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/"
+      details_ending = "/information?includenutrition=false"
+      details_recipe_id = recipe['id']
+      response = Unirest.get "#{details_url}#{details_recipe_id}#{details_ending}",
+
+      headers:{
+        "X-Mashape-Key" => ENV['AUTH_KEY'],
+        "Accept" => "application/json"
+      }
+      recipe[:instructions] = response.body['instructions']
+    end
+
+
+    render json: recipes.body
 
   end
 
   def recipe_details
-    url = "https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/"
-    ending = "/information?includenutrition=false"
-    recipe_id = params[:id]
-    full = "https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/479101/information?includenutrition=false"
-    response = Unirest.get "#{url}#{recipe_id}#{ending}",
+    details_url = "https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/"
+    details_ending = "/information?includenutrition=false"
+    details_recipe_id = params[:id]
+    response = Unirest.get "#{details_url}#{details_recipe_id}#{details_ending}",
 
     headers:{
       "X-Mashape-Key" => ENV['AUTH_KEY'],
