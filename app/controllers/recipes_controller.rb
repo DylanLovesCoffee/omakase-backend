@@ -51,20 +51,21 @@ class RecipesController < ActionController::API
     url = "https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/findByIngredients?fillIngredients=false&ingredients="
     ending = "&limitLicense=false&number=5&ranking=1"
     ingredients = params[:food]
+    Unirest.timeout(100)
     recipes = Unirest.get "#{url}#{ingredients}#ending",
     headers:{
-      "X-Mashape-Key" => params[:api_key],
+      "X-Mashape-Key" => ENV['API_KEY'],
       "Accept" => "application/json"
     }
 
     recipes.body.each do |recipe|
+      Unirest.timeout(100)
       details_url = "https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/"
       details_ending = "/information?includenutrition=false"
       details_recipe_id = recipe[:id]
       response = Unirest.get "#{details_url}#{details_recipe_id}#{details_ending}",
-
-      headers:{
-        "X-Mashape-Key" => params[:api_key],
+      headers: {
+        "X-Mashape-Key" => ENV['API_KEY'],
         "Accept" => "application/json"
       }
       recipe[:instructions] = response.body['instructions']
@@ -82,7 +83,7 @@ class RecipesController < ActionController::API
     response = Unirest.get "#{details_url}#{details_recipe_id}#{details_ending}",
 
     headers:{
-      "X-Mashape-Key" => params[:api_key],
+      "X-Mashape-Key" => ENV['API_KEY'],
       "Accept" => "application/json"
     }
 
